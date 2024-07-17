@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PlayersDataService } from '../../services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-board',
@@ -14,7 +15,10 @@ export class BoardComponent {
   gameDraw = '';
   newPage = true;
 
-  constructor(private readonly playerDataService: PlayersDataService) {}
+  constructor(
+    private readonly playerDataService: PlayersDataService,
+    private router: Router
+  ) {}
 
   startGame() {
     this.square = Array(9).fill(null);
@@ -45,6 +49,9 @@ export class BoardComponent {
     this.champion = this.findChampion();
 
     if (!this.champion && this.counter == 9) {
+      setTimeout(() => {
+        this.router.navigate(['/result']);
+      }, 1000); // 000 milisekund = 5 sekund
       this.gameDraw = 'Draw';
     }
   }
