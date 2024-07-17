@@ -1,0 +1,6 @@
+<p>Podaj imię graczy</p>
+<input [(ngModel)]="playerOne">
+<input [(ngModel)]="playerTwo">
+<button (click)="playerShuffel(playerOne, playerTwo)">Wylosuj kto zaczyna</button>
+
+<p>Zaczyna: {{playerName}}</p>
