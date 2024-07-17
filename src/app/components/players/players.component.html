@@ -1,6 +1,12 @@
-<p>Podaj imię graczy</p>
-<input [(ngModel)]="playerOne">
-<input [(ngModel)]="playerTwo">
-<button (click)="playerShuffel(playerOne, playerTwo)">Wylosuj kto zaczyna</button>
+<p>Podaj imiona graczy</p>
+
+<label for="playerOne">Gracz pierwszy:</label>
+<input type="text" name="playerOne" [(ngModel)]="playerOne">
+<label for="playerTwo">Gracz drugi:</label>
+<input type="text" name="playerTwo" [(ngModel)]="playerTwo">
+
+<button [disabled]="playerOne === '' || playerTwo === ''" (click)="playerShuffel(playerOne, playerTwo)">Wylosuj kto zaczyna i roczpocznij grę</button>
 
 <p>Zaczyna: {{playerName}}</p>
+
+<app-board></app-board>

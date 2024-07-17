@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { PlayersDataService } from '../../services';
 
 @Component({
   selector: 'app-board',
@@ -13,14 +14,21 @@ export class BoardComponent {
   gameDraw = '';
   newPage = true;
 
-  constructor() {}
+  constructor(private readonly playerDataService: PlayersDataService) {}
 
   startGame() {
     this.square = Array(9).fill(null);
+    console.log(this.square);
+
     this.champion = '';
     this.gameDraw = '';
     this.counter = 0;
     this.newPage = false;
+  }
+
+  get getPlayerName() {
+    const playerName = this.playerDataService.getPlayersNames();
+    return this.oIsNext ? playerName[0] : playerName[1];
   }
 
   get getPlayer() {

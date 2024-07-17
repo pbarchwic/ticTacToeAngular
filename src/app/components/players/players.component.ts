@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Player } from '../../models';
+import { PlayersDataService } from '../../services';
 
 @Component({
   selector: 'app-players',
@@ -11,7 +11,13 @@ export class PlayersComponent {
   playerTwo: string = '';
   playerName: string = '';
 
+  constructor(private playerDataService: PlayersDataService) {}
+
   playerShuffel = (playerOne: string, playerTwo: string): void => {
-    this.playerName = Math.random() < 0.5 ? playerOne : playerTwo;
+    let players = [playerOne, playerTwo];
+
+    players = Math.random() < 0.5 ? players : players.reverse();
+    this.playerName = players[0];
+    this.playerDataService.savefirstPlayer(players);
   };
 }
