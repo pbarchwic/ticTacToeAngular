@@ -1,13 +1,15 @@
-<
-<p>Podaj imiona graczy</p>
 
-<label for="playerOne">Gracz pierwszy:</label>
-<input type="text" name="playerOne" [(ngModel)]="playerOne" [disabled]="playerName!==''">
-<label for="playerTwo">Gracz drugi:</label>
-<input type="text" name="playerTwo" [(ngModel)]="playerTwo" [disabled]="playerName!==''">
+<div>
+    <p>Podaj imiona graczy</p>
 
-<button [disabled]="playerOne === '' || playerTwo === ''" (click)="startGame(playerOne, playerTwo)">Wylosuj kto zaczyna i roczpocznij grę</button>
+    <label for="playerOne">Gracz pierwszy:</label>
+    <input type="text" name="playerOne" [(ngModel)]="playerOne">
+    <label for="playerTwo">Gracz drugi:</label>
+    <input type="text" name="playerTwo" [(ngModel)]="playerTwo">
 
-<p>Zaczyna: {{playerName}}</p>
+    <button [disabled]="playerOne === '' || playerTwo === ''" (click)="startGame(playerOne, playerTwo)">Wylosuj kto zaczyna i roczpocznij grę</button>
 
-<app-board></app-board>
+</div>
+
+
+<app-board ></app-board>
