@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-
-type Value = 'X' | 'O';
+import { SymbolType } from '../../models';
 
 @Component({
   selector: 'app-square',
@@ -8,5 +7,5 @@ type Value = 'X' | 'O';
   styleUrl: './square.component.scss',
 })
 export class SquareComponent {
-  @Input() value: 'X' | 'O' | undefined;
+  @Input() value: SymbolType;
 }

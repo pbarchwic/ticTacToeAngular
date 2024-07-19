@@ -1,7 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 button{
     width: 100%;
     height: 100%;
-    font-size: 60px;
+    font-size: 80px;
     background-color: white;
     border: none;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+
+    &:hover {
+        background-color: red;
+    }
 }

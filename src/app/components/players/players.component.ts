@@ -9,9 +9,9 @@ import { BoardComponent } from '../board/board.component';
 export class PlayersComponent implements OnInit {
   @ViewChild(BoardComponent) boardComponent!: BoardComponent;
 
-  playerOne: string = '';
-  playerTwo: string = '';
-  playerName: string = '';
+  playerOne = '';
+  playerTwo = '';
+  playerName = '';
   playersNames: string[] = [];
 
   ngOnInit() {

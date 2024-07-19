@@ -1,7 +1,10 @@
-.main-board {
-    display: flex;
+.layout {
 
-    .player-board {
-        width: 40%;
+    background: rgb(214, 169, 161);
+    text-align: center;
+    
+    &__title {
+        font-size: 24px;
+        padding: 40px ;
     }
 }

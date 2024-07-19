@@ -1,12 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-export interface GameData {
-  players: { [key: string]: number[] };
-  symbols: { [key: string]: string };
-  winner: string;
-  draw: boolean;
-}
+import { GameData, SymbolType } from '../../models';
 
 @Component({
   selector: 'app-board',
@@ -14,14 +8,22 @@ export interface GameData {
   styleUrl: './board.component.scss',
 })
 export class BoardComponent implements OnInit {
-  square: Array<any> = []; /// zmienic typ
-  oIsNext: boolean = true;
-  champion: string = '';
+  readonly gameDataStorageName = 'PlayersData';
+  readonly finishGamePath = '/results';
+  readonly resultTimeout = 3000;
+  readonly cross: string = 'X';
+  readonly circle: string = 'O';
+
+  square: SymbolType[] = [];
+  oIsNext = true;
+  champion: string | undefined = '';
   counter = 0;
   gameDraw = '';
-  newPage = true;
-  playersNames: Array<string> = [];
-  gameData: GameData = { players: {}, symbols: {}, winner: '', draw: false };
+  newGame = true;
+  playersNames: string[] = [];
+  firstSymbol = '';
+  secondSymbol = '';
+  gameData: GameData = {};
 
   constructor(private router: Router) {}
 
@@ -29,46 +31,45 @@ export class BoardComponent implements OnInit {
     this.loadPlayersData();
   }
 
-  startGame() {
+  startGame = () => {
     this.square = Array(9).fill(null);
     this.champion = '';
     this.gameDraw = '';
     this.counter = 0;
-    this.newPage = false;
-  }
+    this.newGame = false;
+  };
 
-  setPlayersNames = (names: Array<string>) => {
+  setPlayersNames = (names: Array<string>): void => {
     this.playersNames = names;
-    this.playerShuffel(this.playersNames);
+    this.playerShuffel();
     this.gameData = {
-      players: {
-        [this.playersNames[0]]: [],
-        [this.playersNames[1]]: [],
-      },
-      symbols: {
-        [this.playersNames[0]]: 'O',
-        [this.playersNames[1]]: 'X',
-      },
-      winner: '',
-      draw: false,
+      [this.playersNames[0]]: { symbol: this.firstSymbol, moves: [] },
+      [this.playersNames[1]]: { symbol: this.secondSymbol, moves: [] },
     };
-    // this.playerShuffel(this.playersNames);
     this.savePlayersData();
   };
 
-  playerShuffel = (players: Array<string>): void => {
-    this.playersNames = Math.random() < 0.5 ? players : players.reverse();
+  playerShuffel = (): void => {
+    [this.firstSymbol, this.secondSymbol] =
+      Math.random() < 0.5
+        ? [this.cross, this.circle]
+        : [this.circle, this.cross];
   };
 
-  get getPlayerName() {
-    return this.oIsNext ? this.playersNames[0] : this.playersNames[1];
+  get getPlayer(): string | undefined {
+    return this.oIsNext ? this.circle : this.cross;
   }
 
-  get getPlayer() {
-    return this.oIsNext ? 'O' : 'X';
+  get getPlayerName(): string | undefined {
+    return this.playersNames.find((playerName) => {
+      if (this.gameData[playerName].symbol === this.getPlayer) {
+        return playerName;
+      }
+      return;
+    });
   }
 
-  makeMove(index: number) {
+  makeMove = (index: number) => {
     if (!this.square[index]) {
       this.updatesMoves(index);
       this.square[index] = this.getPlayer;
@@ -77,17 +78,13 @@ export class BoardComponent implements OnInit {
     }
 
     this.champion = this.findChampion();
-    console.log(this.champion);
 
-    if (!this.champion && this.counter == 9) {
-      setTimeout(() => {
-        this.router.navigate(['/results']);
-      }, 1000);
-      this.gameDraw = 'Draw';
+    if (this.champion || this.counter === 9) {
+      this.finishGame();
     }
-  }
+  };
 
-  findChampion() {
+  findChampion = () => {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -106,51 +103,66 @@ export class BoardComponent implements OnInit {
         this.square[a] === this.square[b] &&
         this.square[a] === this.square[c]
       ) {
-        return this.square[a];
+        if (this.getPlayerName !== undefined) {
+          return this.playersNames.find(
+            (playerName) => this.gameData[playerName].symbol === this.square[a]
+          );
+        }
       }
     }
+    return;
+  };
 
-    return null;
-  }
+  finishGame = (): boolean => {
+    this.champion
+      ? console.log(`Champion: ${this.champion}`)
+      : console.log('Game Draw');
 
-  setResult = () => {};
+    setTimeout(() => {
+      this.router.navigate([this.finishGamePath]);
+      sessionStorage.clear();
+    }, this.resultTimeout);
+
+    return true;
+  };
 
   savePlayersData = (): void => {
-    sessionStorage.setItem('PlayersData', JSON.stringify(this.gameData));
+    sessionStorage.setItem(
+      this.gameDataStorageName,
+      JSON.stringify(this.gameData)
+    );
   };
 
   updatesMoves = (move: number) => {
-    this.gameData[this.getPlayerName].push(move);
+    const playerName = this.getPlayerName;
+
+    if (playerName !== undefined) {
+      this.gameData[playerName].moves.push(move);
+    }
     this.savePlayersData();
   };
 
   loadPlayersData = () => {
-    const savedGameData = sessionStorage.getItem('PlayersData');
+    const savedGameData = sessionStorage.getItem(this.gameDataStorageName);
     if (savedGameData) {
       this.gameData = JSON.parse(savedGameData);
-
-      // Przywróć imiona graczy
       this.playersNames = Object.keys(this.gameData);
-
-      // Przywróć stan gry
       this.square = Array(9).fill(null);
+
       for (const player in this.gameData) {
-        this.gameData[player].forEach((move: number) => {
-          this.square[move] = player === this.playersNames[0] ? 'O' : 'X';
+        this.gameData[player].moves.forEach((move: number) => {
+          this.square[move] = this.gameData[player].symbol;
         });
       }
 
-      // Przywróć licznik ruchów
       this.counter =
-        this.gameData[this.playersNames[0]].length +
-        this.gameData[this.playersNames[1]].length;
+        this.gameData[this.playersNames[0]].moves.length +
+        this.gameData[this.playersNames[1]].moves.length;
 
-      // Sprawdź, kto jest następny
       this.oIsNext = this.counter % 2 === 0;
       this.getPlayerName;
-
-      // Sprawdź, czy jest zwycięzca
-      this.champion = this.findChampion();
+      // this.champion = this.findChampion();
+      this.newGame = false;
     }
   };
 }
