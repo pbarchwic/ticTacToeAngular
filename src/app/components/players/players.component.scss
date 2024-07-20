@@ -4,9 +4,7 @@
   max-width: 400px;
   padding: 0 30px;
   text-align: left;
-  // &__player {
-  //     text-align: left;
-  // }
+ 
 
   &__label {
     min-width: 130px;
@@ -15,5 +13,15 @@
 
   &__input {
     margin: 10px 0;
+    background-color: transparent;
+    border: none;
+    border-bottom: 3px solid #124e66;
+    color: white;
+    font-size: 18px;
+
+    &:focus {
+      outline: none;
+    }
   }
+
 }
