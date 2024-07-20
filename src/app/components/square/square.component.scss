@@ -10,8 +10,9 @@ button{
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
+    transition: 0.3s;
 
     &:hover {
-        background-color: red;
+        background-color: lightgray;
     }
 }

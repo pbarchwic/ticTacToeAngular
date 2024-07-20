@@ -16,7 +16,7 @@ import * as Services from './services/index';
     Components.SquareComponent,
   ],
   imports: [BrowserModule, RootRoutingModule, FormsModule],
-  providers: [Services.PlayersDataService],
+  providers: [Services.GameResultService],
   bootstrap: [Components.RootComponent],
 })
 export class RootModule {}

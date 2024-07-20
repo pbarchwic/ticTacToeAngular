@@ -1,1 +1,1 @@
-export * from './playersData.service';
+export * from './gameResult.service';

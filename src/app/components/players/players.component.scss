@@ -1,0 +1,19 @@
+.players-inputs {
+
+  margin: auto;
+  max-width: 400px;
+  padding: 0 30px;
+  text-align: left;
+  // &__player {
+  //     text-align: left;
+  // }
+
+  &__label {
+    min-width: 130px;
+    display: inline-block;
+  }
+
+  &__input {
+    margin: 10px 0;
+  }
+}

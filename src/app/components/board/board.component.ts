@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GameData, SymbolType } from '../../models';
+import { GameData, SymbolType, PlayerName } from '../../models';
+import { GameResultService } from '../../services';
 
 @Component({
   selector: 'app-board',
@@ -11,65 +12,71 @@ export class BoardComponent implements OnInit {
   readonly gameDataStorageName = 'PlayersData';
   readonly finishGamePath = '/results';
   readonly resultTimeout = 3000;
-  readonly cross: string = 'X';
-  readonly circle: string = 'O';
+  readonly cross: SymbolType = 'X';
+  readonly circle: SymbolType = 'O';
+
+  oIsNext = true;
+  newGame = true;
+  counter = 0;
 
   square: SymbolType[] = [];
-  oIsNext = true;
-  champion: string | undefined = '';
-  counter = 0;
-  gameDraw = '';
-  newGame = true;
+  winner: PlayerName = '';
   playersNames: string[] = [];
-  firstSymbol = '';
-  secondSymbol = '';
+  firstSymbol: SymbolType = undefined;
+  secondSymbol: SymbolType = undefined;
   gameData: GameData = {};
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private gameResultservice: GameResultService
+  ) {}
 
   ngOnInit(): void {
     this.loadPlayersData();
   }
 
-  startGame = () => {
+  public startGame = (): void => {
     this.square = Array(9).fill(null);
-    this.champion = '';
-    this.gameDraw = '';
+    this.winner = '';
     this.counter = 0;
     this.newGame = false;
+    this.oIsNext = true;
   };
 
-  setPlayersNames = (names: Array<string>): void => {
+  public setPlayersNames = (names: string[]): void => {
     this.playersNames = names;
     this.playerShuffel();
     this.gameData = {
-      [this.playersNames[0]]: { symbol: this.firstSymbol, moves: [] },
-      [this.playersNames[1]]: { symbol: this.secondSymbol, moves: [] },
+      [this.playersNames[0]]: {
+        symbol: this.firstSymbol as SymbolType,
+        moves: [],
+      },
+      [this.playersNames[1]]: {
+        symbol: this.secondSymbol as SymbolType,
+        moves: [],
+      },
     };
     this.savePlayersData();
   };
 
-  playerShuffel = (): void => {
+  private playerShuffel = (): void => {
     [this.firstSymbol, this.secondSymbol] =
       Math.random() < 0.5
         ? [this.cross, this.circle]
         : [this.circle, this.cross];
   };
 
-  get getPlayer(): string | undefined {
+  private get getPlayer(): SymbolType {
     return this.oIsNext ? this.circle : this.cross;
   }
 
-  get getPlayerName(): string | undefined {
-    return this.playersNames.find((playerName) => {
-      if (this.gameData[playerName].symbol === this.getPlayer) {
-        return playerName;
-      }
-      return;
-    });
+  public get getPlayerName(): PlayerName {
+    return this.playersNames.find(
+      (playerName) => this.gameData[playerName].symbol === this.getPlayer
+    );
   }
 
-  makeMove = (index: number) => {
+  public makeMove = (index: number): void => {
     if (!this.square[index]) {
       this.updatesMoves(index);
       this.square[index] = this.getPlayer;
@@ -77,14 +84,10 @@ export class BoardComponent implements OnInit {
       this.counter++;
     }
 
-    this.champion = this.findChampion();
-
-    if (this.champion || this.counter === 9) {
-      this.finishGame();
-    }
+    this.checkAndFinish();
   };
 
-  findChampion = () => {
+  private findWinner = (): PlayerName => {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -96,44 +99,44 @@ export class BoardComponent implements OnInit {
       [2, 4, 6],
     ];
 
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
+    for (const [a, b, c] of lines) {
       if (
         this.square[a] &&
         this.square[a] === this.square[b] &&
         this.square[a] === this.square[c]
       ) {
-        if (this.getPlayerName !== undefined) {
-          return this.playersNames.find(
-            (playerName) => this.gameData[playerName].symbol === this.square[a]
-          );
-        }
+        return this.playersNames.find(
+          (playerName) => this.gameData[playerName].symbol === this.square[a]
+        );
       }
     }
     return;
   };
 
-  finishGame = (): boolean => {
-    this.champion
-      ? console.log(`Champion: ${this.champion}`)
-      : console.log('Game Draw');
+  private checkAndFinish = (): void => {
+    this.winner = this.findWinner();
 
+    if (this.winner || this.counter === 9) {
+      this.gameResultservice.setWinner(this.winner);
+      this.endGame();
+    }
+  };
+
+  private endGame = (): void => {
     setTimeout(() => {
       this.router.navigate([this.finishGamePath]);
       sessionStorage.clear();
     }, this.resultTimeout);
-
-    return true;
   };
 
-  savePlayersData = (): void => {
+  private savePlayersData = (): void => {
     sessionStorage.setItem(
       this.gameDataStorageName,
       JSON.stringify(this.gameData)
     );
   };
 
-  updatesMoves = (move: number) => {
+  private updatesMoves = (move: number): void => {
     const playerName = this.getPlayerName;
 
     if (playerName !== undefined) {
@@ -142,9 +145,10 @@ export class BoardComponent implements OnInit {
     this.savePlayersData();
   };
 
-  loadPlayersData = () => {
+  private loadPlayersData = (): void => {
     const savedGameData = sessionStorage.getItem(this.gameDataStorageName);
     if (savedGameData) {
+      this.newGame = false;
       this.gameData = JSON.parse(savedGameData);
       this.playersNames = Object.keys(this.gameData);
       this.square = Array(9).fill(null);
@@ -160,9 +164,9 @@ export class BoardComponent implements OnInit {
         this.gameData[this.playersNames[1]].moves.length;
 
       this.oIsNext = this.counter % 2 === 0;
-      this.getPlayerName;
-      // this.champion = this.findChampion();
-      this.newGame = false;
+      // this.getPlayerName;
+
+      this.checkAndFinish();
     }
   };
 }

@@ -1,10 +1,5 @@
-
-/* Include the Poppins font */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-/* Apply the font to the h2 tag */
 h2 {
-  font-family: 'Poppins', sans-serif;
+  
   /* You can also specify additional styles if needed */
   font-weight: 700; /* Use 400 for regular and 700 for bold, adjust as needed */
   /* Add other styles like color, margin, padding, etc. */
@@ -12,31 +7,12 @@ h2 {
   padding: 0.75em;
 }
 
-button {
-    display: inline-block;
-    padding: 15px 30px; /* Adjust padding to make the button bigger */
-    font-size: 18px; /* Adjust font size as needed */
-    border-radius: 10px; /* Create rounded edges */
-    background-color:#871282; /* Set background color to black */
-    color: white; /* Set font color to white */
-    text-decoration: none; /* Remove underline for anchor tags (if it's a link) */
-    cursor: pointer; /* Add a pointer cursor for better user experience */
-  }
-  
-  /* Hover effect (optional) */
-  .button:hover {
-    background-color: #333; /* Darken the background color on hover */
-  }
-  
-
 .game-board{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     height: 100vh;
-    // background: rgb(246,161,146);
-    // background: radial-gradient(circle, rgba(246,161,146,1) 40%, rgba(255,229,180,1) 60%, rgba(246,217,146,1) 70%);
+
 
     &__main{
       display: grid;
@@ -51,11 +27,52 @@ button {
     height: 100%;
     background-color: grey;
     opacity: 0.5;
-  }
 
+    
+.lds-ring,
+.lds-ring div {
+  box-sizing: border-box;
+}
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid currentColor;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: currentColor transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 
+  }
+
+}
 
 app-square{
 
@@ -63,4 +80,3 @@ app-square{
      height: 200px;
 }
 
-/* Style the button */

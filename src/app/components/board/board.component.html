@@ -1,9 +1,22 @@
 <div class="game-board">
-    <h2 class="game-board__message" *ngIf="newGame">Podaj imiona graczy i wylosuj kolejność!</h2> 
-    <h2 class="game-board__message" *ngIf="!champion && !gameDraw && !newGame" >Kolejny ruch : {{getPlayerName}}</h2>
-    <h2 class="game-board__message" *ngIf="champion">Player {{champion}} won!!</h2>
+    @if (newGame) {
+        <h2 class="game-board__message">Podaj imiona graczy i wylosuj kolejność!</h2> 
+    } @else {
+        <h2 class="game-board__message">Kolejny ruch : {{getPlayerName}}</h2>
+    }
+    
     <div class="game-board__main" >
-        <div class="game-board__finished" *ngIf="champion || this.counter === 9"></div>
+        @if (winner || this.counter === 9) {
+            <div class="game-board__finished">
+                <div class="lds-ring">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        }
+        
         <app-square *ngFor="let val of square; let i=index" [value]="val" (click)="makeMove(i)"></app-square>
     </div>
 </div>

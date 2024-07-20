@@ -1,3 +1,10 @@
-<p>Wygral użytkownik X lub Y</p>
-<p>Remis</p>
-<button routerLink="/">Child A</button>
+<div class="result">
+    @if (this.winner) {
+        <p class="result__title">Wygrał {{winner}}, GRATULACJĘ!!!</p>
+    } @else {
+        <p class="result__title">Remis, może zagrasz jeszcze raz?</p>
+    }
+    
+    <button class="button result__button" routerLink="/">Zagraj jeszcze raz</button>
+
+</div>
