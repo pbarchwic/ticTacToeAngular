@@ -7,7 +7,7 @@ import { GameResultService } from '../../services';
   styleUrl: './results.component.scss',
 })
 export class ResultsComponent implements OnInit {
-  winner: string | undefined = '';
+  winner: string | undefined = undefined;
   constructor(private gameResultService: GameResultService) {}
 
   ngOnInit(): void {

@@ -1,3 +1,5 @@
+@import '../../../colors';
+
 .players-inputs {
 
   margin: auto;
@@ -15,8 +17,8 @@
     margin: 10px 0;
     background-color: transparent;
     border: none;
-    border-bottom: 3px solid #124e66;
-    color: white;
+    border-bottom: 3px solid $primary-color;
+    color: $secondary-color;
     font-size: 18px;
 
     &:focus {

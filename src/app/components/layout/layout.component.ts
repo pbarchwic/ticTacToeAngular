@@ -1,17 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })
-export class LayoutComponent implements OnInit {
-  constructor(private router: Router) {}
-
-  ngOnInit(): void {
-    // setTimeout(() => {
-    //   this.router.navigate(['/results']);
-    // }, 3000);
-  }
-}
+export class LayoutComponent {}

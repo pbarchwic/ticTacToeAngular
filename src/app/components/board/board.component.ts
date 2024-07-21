@@ -164,8 +164,6 @@ export class BoardComponent implements OnInit {
         this.gameData[this.playersNames[1]].moves.length;
 
       this.oIsNext = this.counter % 2 === 0;
-      // this.getPlayerName;
-
       this.checkAndFinish();
     }
   };

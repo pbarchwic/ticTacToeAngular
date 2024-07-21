@@ -11,8 +11,6 @@ export class PlayersComponent implements OnInit {
 
   playerOne = '';
   playerTwo = '';
-  // playerName = '';
-  // playersNames: string[] = [];
 
   ngOnInit() {
     this.setStoragePlayers();
@@ -23,7 +21,7 @@ export class PlayersComponent implements OnInit {
     this.boardComponent.startGame();
   };
 
-  setStoragePlayers = () => {
+  setStoragePlayers = (): void => {
     const savedGameData = sessionStorage.getItem('PlayersData');
     if (savedGameData) {
       const playersNames = Object.keys(JSON.parse(savedGameData));
